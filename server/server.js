@@ -13,6 +13,26 @@ var io     = socketIO(server); // web socket server
 io.on('connection', (socket) => {
     console.log('New user connected!');
 
+    socket.emit('newEmail', {
+        from: 'anh@gmail.com',
+        text: 'I love NodeJS',
+        createdAt: 12345
+    });
+
+    socket.emit('newMessage', {
+        from: 'nam@gmail.com',
+        text: 'I am in Darmstadt',
+        createdAt: 67890
+    });
+
+    socket.on('createEmail', (newEmail) => {
+        console.log('createdEmail', newEmail);
+    });
+
+    socket.on('createMessage', (message) => {
+        console.log('Message is created: ', message);
+    });
+
     socket.on('disconnect', () => {
         console.log('USER Disconnected from server!');
     });
