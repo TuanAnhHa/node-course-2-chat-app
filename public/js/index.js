@@ -7,11 +7,12 @@ socket.on('connect', function(){
         to: 'anh@example.com',
         text: 'I am from the Client'
     });
-
+    /*
     socket.emit('createMessage', {
         from: 'linh@lichtenberg.com',
         text: 'I like you!'
     });
+    */
 });
 
 socket.on('disconnect', function(){

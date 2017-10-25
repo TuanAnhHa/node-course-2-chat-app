@@ -18,19 +18,24 @@ io.on('connection', (socket) => {
         text: 'I love NodeJS',
         createdAt: 12345
     });
-
-    socket.emit('newMessage', {
+    /*
+    socket.emit('newMessage', { // to single connection
         from: 'nam@gmail.com',
         text: 'I am in Darmstadt',
         createdAt: 67890
     });
-
+    */
     socket.on('createEmail', (newEmail) => {
         console.log('createdEmail', newEmail);
     });
 
     socket.on('createMessage', (message) => {
         console.log('Message is created: ', message);
+        io.emit('newMessage', { // to every single connection
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
     });
 
     socket.on('disconnect', () => {
