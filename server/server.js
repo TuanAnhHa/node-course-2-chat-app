@@ -13,11 +13,18 @@ var io     = socketIO(server); // web socket server
 io.on('connection', (socket) => {
     console.log('New user connected!');
 
-    socket.emit('newEmail', {
-        from: 'anh@gmail.com',
-        text: 'I love NodeJS',
-        createdAt: 12345
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to the Chat App',
+        createdAt: new Date().getTime()
     });
+
+    socket.broadcast.emit('newMessage', { // only other connections can receive
+        from: 'Admin',
+        text: 'New User joined!',
+        createdAt: new Date().getTime()
+    });
+
     /*
     socket.emit('newMessage', { // to single connection
         from: 'nam@gmail.com',
@@ -31,11 +38,20 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (message) => {
         console.log('Message is created: ', message);
+
         io.emit('newMessage', { // to every single connection
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
         });
+
+        /*
+        socket.broadcast.emit('newMessage', { // only other connections can receive
+            from: message.from,
+            text: message.text,
+            createdAt: new Date().getTime()
+        });
+        */
     });
 
     socket.on('disconnect', () => {
