@@ -10,20 +10,14 @@ var app    = express(); // app is an express function
 var server = http.createServer(app);
 var io     = socketIO(server); // web socket server
 
+const { generateMessage } = require('./utils/message');
+
 io.on('connection', (socket) => {
     console.log('New user connected!');
 
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to the Chat App',
-        createdAt: new Date().getTime()
-    });
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app!'));
 
-    socket.broadcast.emit('newMessage', { // only other connections can receive
-        from: 'Admin',
-        text: 'New User joined!',
-        createdAt: new Date().getTime()
-    });
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined!'));
 
     /*
     socket.emit('newMessage', { // to single connection
@@ -38,20 +32,16 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (message) => {
         console.log('Message is created: ', message);
-
+        /*
         io.emit('newMessage', { // to every single connection
             from: message.from,
             text: message.text,
             createdAt: new Date().getTime()
         });
-
-        /*
-        socket.broadcast.emit('newMessage', { // only other connections can receive
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
         */
+
+        socket.broadcast.emit('newMessage', generateMessage(message.from, message.text));
+
     });
 
     socket.on('disconnect', () => {
